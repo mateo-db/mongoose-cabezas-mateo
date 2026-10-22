@@ -1,8 +1,13 @@
 //importamos herramientas necesarias de mongoose
-import { model, Schema } from 'mongoose'
+import { model, Schema, Types } from 'mongoose'
 
 //creamos esquema
 const examSchema = new Schema({
+    examinee: {
+        type: Types.ObjectId,
+        ref: "Student",
+        required: true
+    },
     subject: {
         type: String,
         required: true
@@ -15,7 +20,7 @@ const examSchema = new Schema({
     },
     semester: {
         type: Number,
-        enum: ["first", "second"], 
+        enum: ["first", "second"],
         date: //propiedad embebida date en propiedad semester
             {
             type: Date,
