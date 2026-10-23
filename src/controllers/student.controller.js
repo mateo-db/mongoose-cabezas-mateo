@@ -1,4 +1,5 @@
 import { ExamModel } from '../models/exam.model.js'
+import { SubjectModel } from '../models/subject.model.js'
 import { StudentModel } from './src/models/student.model.js'
 import { matchedData } from 'express-validator'
 
@@ -128,40 +129,16 @@ export const updateStudentById = async (req, res) => {
     }
 }
 
+//eliminar estudiante en particular, sus examenes y materias inscriptas
 export const deleteStudentById = async (req, res) => {
-    try {
-        const {id} = matchedData(req, {locations: ['params']})
-
-        //eliminación lógica
-        const deletedStudent = await StudentModel.findByIdAndUpdate(id, {
-            deletedAt: new Date(),
-        },
-        {
-            returnDocument: 'after'
-        })
-        return res.status(201).json({
-            message: "Estudiante eliminado lógicamente con éxito:",
-            data: deletedStudent
-        })
-    } catch (error) {
-        console.log(error)
-        return res.status(500).json({
-            message: "Error interno del servidor"
-        })
-    }
-}
-
-
-
-//eliminar estudiante y sus examenes
-export const deleteStuAndExams = async (req, res) => {
     try {
         const {id} = matchedData(req, {locations: ['params']})
 
         //eliminación en cascada de examenes (se eliminan todos los asociados al estudiante)
         await ExamModel.deleteMany({ examinee: id })
-
-        //eliminación lógica
+        //eliminación en cascada de materias a la que está inscripto el estudiante
+        await SubjectModel.deleteMany({ students_enrolled: id})
+        //eliminación lógica de estudiante
         const deletedStudent = await StudentModel.findByIdAndUpdate(id, {
             deletedAt: new Date(),
         },
