@@ -22,7 +22,11 @@ const studentFileSchema = new Schema({
     exams_passed: [{
         type: Types.ObjectId, //fk en propiedad del esquema de ficha de estudiante
         ref: "Exam" //modelo independiente al que hace referencia esta fk 
-    }]
+    }],
+    deletedAt: {
+        type: Date,
+        default: null
+    }
 })
 
 export const StudentFileModel = model("StudentFile", studentFileSchema)
