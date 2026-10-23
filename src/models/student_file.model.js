@@ -4,7 +4,8 @@ const studentFileSchema = new Schema({
     student: {
         type: Types.ObjectId, //fk
         ref: "Student", //modelo al que hace referencia nuestra fk
-        required: true // para que la relación sea 1:1, aplicamos required true
+        required: true,
+        unique: true // para que la relación sea 1:1, aplicamos unique true, de esta forma nos aseguramos que dos fichas no puedan estar asociadas al mismo estudiante
     },
     birth_date: {
         type: Date,
