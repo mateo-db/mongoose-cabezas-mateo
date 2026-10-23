@@ -1,5 +1,5 @@
 //importamos herramientas necesarias de mongoose
-import { model, Schema } from 'mongoose'
+import { model, Schema, virtual } from 'mongoose'
 
 //creamos esquema
 const studentSchema = new Schema({
@@ -24,7 +24,16 @@ const studentSchema = new Schema({
 },
 {
     timestamps: false,
-    versionKey: false
+    versionKey: false,
+    toJSON: {virtuals: true},
+    toObject: {virtuals: true}
+})
+
+//propiedad virtual del schema
+studentSchema.virtual("student_exams",{
+    ref: "Exam",
+    localField: "_id",
+    foreignField: "examinee"
 })
 
 //exportamos modelo con schema

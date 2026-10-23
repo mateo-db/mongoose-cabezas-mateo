@@ -46,6 +46,29 @@ export const getAllStudents = async (req, res) => {
     }
 }
 
+export const getStudentAndExams = async (req, res) => {
+    try {
+        const {id} = matchedData(req, {locations: ['params']})
+        const stuAndExams = await StudentModel.find(id).populate('student_exams')
+
+        if (!stuAndExams) {
+            return res.status(404).json({
+                message: "No se encontraron examenes vinculados a ese estudiante"
+            })
+        }
+
+        return res.status(201).json({
+            message: "Estudiantes y sus exámenes encontrados:",
+            data: stuAndExams
+        })
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({
+            message: "Error interno del servidor"
+        })
+    }
+}
+
 //traer un estudiante por su id
 export const getStudentById = async (req, res) => {
     try {
