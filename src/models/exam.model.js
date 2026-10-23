@@ -26,7 +26,7 @@ const examSchema = new Schema({
             type: Date,
             default: Date.now //fecha actual como default
             }
-    }
+    },
     },
 {
     timestamps: false,

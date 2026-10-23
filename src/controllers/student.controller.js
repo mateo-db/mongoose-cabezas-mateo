@@ -1,3 +1,4 @@
+import { ExamModel } from '../models/exam.model.js'
 import { StudentModel } from './src/models/student.model.js'
 import { matchedData } from 'express-validator'
 
@@ -127,11 +128,10 @@ export const updateStudentById = async (req, res) => {
     }
 }
 
-//eliminar estudiante por id
 export const deleteStudentById = async (req, res) => {
     try {
         const {id} = matchedData(req, {locations: ['params']})
-        
+
         //eliminación lógica
         const deletedStudent = await StudentModel.findByIdAndUpdate(id, {
             deletedAt: new Date(),
@@ -141,6 +141,35 @@ export const deleteStudentById = async (req, res) => {
         })
         return res.status(201).json({
             message: "Estudiante eliminado lógicamente con éxito:",
+            data: deletedStudent
+        })
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({
+            message: "Error interno del servidor"
+        })
+    }
+}
+
+
+
+//eliminar estudiante y sus examenes
+export const deleteStuAndExams = async (req, res) => {
+    try {
+        const {id} = matchedData(req, {locations: ['params']})
+
+        //eliminación en cascada de examenes (se eliminan todos los asociados al estudiante)
+        await ExamModel.deleteMany({ examinee: id })
+
+        //eliminación lógica
+        const deletedStudent = await StudentModel.findByIdAndUpdate(id, {
+            deletedAt: new Date(),
+        },
+        {
+            returnDocument: 'after'
+        })
+        return res.status(201).json({
+            message: "Estudiante y sus exámenes eliminados con éxito:",
             data: deletedStudent
         })
     } catch (error) {
