@@ -17,6 +17,10 @@ const studentSchema = new Schema({
         min: 11,
         max: 18
     },
+    deletedAt: {
+        type: Date,
+        default: null
+    }
 },
 {
     timestamps: false,

@@ -1,0 +1,130 @@
+import { StudentModel } from './src/models/student.model.js'
+import { matchedData } from 'express-validator'
+
+//registrar (crear) un estudiante
+export const registerStudent = async (req, res) => {
+    try {
+        const { first_name, last_name, age } = matchedData(req, {locations: ['body']})
+        const newStudent = await StudentModel.create({
+            first_name,
+            last_name,
+            age
+        })
+
+        return res.status(201).json({
+            message: "Estudiante registrado correctamente",
+            data: newStudent
+        })
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({
+            message: "Error interno del servidor"
+        })
+    }
+}
+
+//traer todos los estudiantes
+export const getAllStudents = async (req, res) => {
+    try {
+        const allStudents = await StudentModel.find()
+
+        if (!allStudents) {
+            return res.status(404).json({
+                message: "No se encontraron estudiantes registrados"
+            })
+        }
+
+        return res.status(201).json({
+            message: "Estudiantes registrados encontrados:",
+            data: allStudents
+        })
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({
+            message: "Error interno del servidor"
+        })
+    }
+}
+
+//traer un estudiante por su id
+export const getStudentById = async (req, res) => {
+    try {
+        const {id} = matchedData(req, {locations: ['params']})
+        const studentById = await StudentModel.findById(id)
+
+        if (!studentById) {
+            return res.status(404).json({
+                message: "Estudiante no encontrado"
+            })
+        }
+
+        return res.status(201).json({
+            message: "Estudiante registrado encontrado:",
+            data: studentById 
+        })
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({
+            message: "Error interno del servidor"
+        })
+    }
+}
+
+//actualizar estudiante por id
+export const updateStudentById = async (req, res) => {
+    try {
+        const {id} = matchedData(req, {locations: ['params']})
+        const {first_name, last_name, age} = matchedData(req, {locations: ['body']})
+        const studentById = await StudentModel.findByIdAndUpdate(id, 
+            {
+                first_name,
+                last_name,
+                age
+            },
+            {
+                returnDocument: "after"
+            }
+        )
+
+        if (!studentById) {
+            return res.status(404).json({
+                message: "Estudiante a actualizar no encontrado"
+            })
+        }
+
+        return res.status(201).json({
+            message: "Estudiante actualizado:",
+            data: studentById 
+        })
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({
+            message: "Error interno del servidor"
+        })
+    }
+}
+
+//eliminar estudiante por id
+export const deleteStudentById = async (req, res) => {
+    try {
+        const {id} = matchedData(req, {locations: ['params']})
+        
+        //eliminación lógica
+        const deletedStudent = await StudentModel.findByIdAndUpdate(id, {
+            deletedAt: new Date(),
+        },
+        {
+            returnDocument: 'after'
+        })
+        return res.status(201).json({
+            message: "Estudiante eliminado lógicamente con éxito:",
+            data: deletedStudent
+        })
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({
+            message: "Error interno del servidor"
+        })
+    }
+}
+
