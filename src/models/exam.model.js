@@ -19,7 +19,7 @@ const examSchema = new Schema({
         max: 10
     },
     semester: {
-        type: Number,
+        type: String,
         enum: ["first", "second"],
         date: //propiedad embebida date en propiedad semester
             {
