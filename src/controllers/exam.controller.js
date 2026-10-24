@@ -51,7 +51,7 @@ export const getAllExams = async (_req, res) => {
 export const getStudentExamById = async (req, res) => {
     try {
         const {studentId} = matchedData(req, {locations: ['params']})
-        const examsByStudentId = await ExamModel.find(studentId).populate('student_exams')
+        const examsByStudentId = await ExamModel.find({ examinee: studentId }).populate('examinee')
 
         if (!examsByStudentId) {
             return res.status(404).json({
@@ -59,7 +59,7 @@ export const getStudentExamById = async (req, res) => {
             })
         }
 
-        return res.status(200).json({
+        return res.status(200).json({ 
             message: "Estudiante y exámenes encontrado:",
             data: examsByStudentId
         })

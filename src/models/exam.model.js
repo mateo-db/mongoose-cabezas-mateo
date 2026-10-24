@@ -29,6 +29,10 @@ const examSchema = new Schema({
             default: Date.now //fecha actual como default
             }
     },
+    deletedAt: {
+        type: Date,
+        default: null
+    }
     },
 {
     timestamps: false,
