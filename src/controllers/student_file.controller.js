@@ -1,12 +1,11 @@
-import { StudentFileModel } from '../models/student_file.model'
-import { SubjectModel } from '../models/subject.model.JS'
+import { StudentFileModel } from '../models/student_file.model.js'
 import { matchedData } from 'express-validator'
 
 //registrar (crear) una ficha estudiantil
 export const registerStudentFile = async (req, res) => {
     try {
         const { student, birth_date, birth_place, nationality, exams_passed } = matchedData(req, {locations: ['body']})
-        const newStudentFile = await ExamModel.create({
+        const newStudentFile = await StudentFileModel.create({
             student,
             birth_date,
             birth_place,
@@ -52,8 +51,8 @@ export const getAllStudentFiles = async (_req, res) => {
 //traer una ficha estudiantil de estudiante en particular
 export const getStudentsFile = async (req, res) => {
     try {
-        const { id } = matchedData(req, {locations: ['params']})
-        const studentsFile = await StudentFileModel.find(id).populate('student').populate('exams_passed')
+        const { studentId } = matchedData(req, {locations: ['params']})
+        const studentsFile = await StudentFileModel.findOne( { student: studentId }).populate('student').populate('exams_passed')
 
         if (!studentsFile) {
             return res.status(404).json({
@@ -77,9 +76,9 @@ export const getStudentsFile = async (req, res) => {
 //actualizar ficha por id
 export const updateStudentFileById = async (req, res) => {
     try {
-        const {id} = matchedData(req, {locations: ['params']})
+        const {studentFileId} = matchedData(req, {locations: ['params']})
         const {student, birth_date, birth_place, nationality, exams_passed} = matchedData(req, {locations: ['body']})
-        const fileToUpdateById = await StudentFileModel.findByIdAndUpdate(id,
+        const fileToUpdateById = await StudentFileModel.findByIdAndUpdate(studentFileId,
             {
                 student,
                 birth_date,
@@ -117,10 +116,10 @@ export const updateStudentFileById = async (req, res) => {
 //eliminar ficha
 export const deleteStudentFile = async (req, res) => {
     try {
-        const {id} = matchedData(req, {locations: ['params']})
+        const {studentFileId} = matchedData(req, {locations: ['params']})
 
         //eliminación lógica
-        const deletedStudentFile = await StudentFileModel.findByIdAndUpdate(id, {
+        const deletedStudentFile = await StudentFileModel.findByIdAndUpdate(studentFileId, {
             deletedAt: new Date(),
         },
         {
