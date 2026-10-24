@@ -1,5 +1,5 @@
 //importamos herramientas necesarias de mongoose
-import { model, Schema, virtual } from 'mongoose'
+import { model, Schema } from 'mongoose'
 
 //creamos esquema
 const studentSchema = new Schema({

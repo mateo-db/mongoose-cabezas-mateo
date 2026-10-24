@@ -1,6 +1,6 @@
 import { ExamModel } from '../models/exam.model.js'
 import { SubjectModel } from '../models/subject.model.js'
-import { StudentModel } from './src/models/student.model.js'
+import { StudentModel } from '../models/student.model.js'
 import { matchedData } from 'express-validator'
 
 //registrar (crear) un estudiante
@@ -26,7 +26,7 @@ export const registerStudent = async (req, res) => {
 }
 
 //traer todos los estudiantes
-export const getAllStudents = async (req, res) => {
+export const getAllStudents = async (_req, res) => {
     try {
         const allStudents = await StudentModel.find()
 
@@ -36,7 +36,7 @@ export const getAllStudents = async (req, res) => {
             })
         }
 
-        return res.status(201).json({
+        return res.status(200).json({
             message: "Estudiantes registrados encontrados:",
             data: allStudents
         })
@@ -50,8 +50,8 @@ export const getAllStudents = async (req, res) => {
 
 export const getStudentAndExams = async (req, res) => {
     try {
-        const {id} = matchedData(req, {locations: ['params']})
-        const stuAndExams = await StudentModel.find(id).populate('student_exams')
+        const {studentId} = matchedData(req, {locations: ['params']})
+        const stuAndExams = await StudentModel.find(studentId).populate('student_exams')
 
         if (!stuAndExams) {
             return res.status(404).json({
@@ -59,7 +59,7 @@ export const getStudentAndExams = async (req, res) => {
             })
         }
 
-        return res.status(201).json({
+        return res.status(200).json({
             message: "Estudiantes y sus exámenes encontrados:",
             data: stuAndExams
         })
@@ -74,8 +74,8 @@ export const getStudentAndExams = async (req, res) => {
 //traer un estudiante por su id
 export const getStudentById = async (req, res) => {
     try {
-        const {id} = matchedData(req, {locations: ['params']})
-        const studentById = await StudentModel.findById(id)
+        const {studentId} = matchedData(req, {locations: ['params']})
+        const studentById = await StudentModel.findById(studentId)
 
         if (!studentById) {
             return res.status(404).json({
@@ -83,7 +83,7 @@ export const getStudentById = async (req, res) => {
             })
         }
 
-        return res.status(201).json({
+        return res.status(200).json({
             message: "Estudiante registrado encontrado:",
             data: studentById 
         })
@@ -98,9 +98,9 @@ export const getStudentById = async (req, res) => {
 //actualizar estudiante por id
 export const updateStudentById = async (req, res) => {
     try {
-        const {id} = matchedData(req, {locations: ['params']})
+        const {studentId} = matchedData(req, {locations: ['params']})
         const {first_name, last_name, age} = matchedData(req, {locations: ['body']})
-        const studentById = await StudentModel.findByIdAndUpdate(id, 
+        const studentById = await StudentModel.findByIdAndUpdate(studentId, 
             {
                 first_name,
                 last_name,
@@ -117,7 +117,7 @@ export const updateStudentById = async (req, res) => {
             })
         }
 
-        return res.status(201).json({
+        return res.status(200).json({
             message: "Estudiante actualizado:",
             data: studentById 
         })
@@ -132,20 +132,20 @@ export const updateStudentById = async (req, res) => {
 //eliminar estudiante en particular, sus examenes y materias inscriptas
 export const deleteStudentById = async (req, res) => {
     try {
-        const {id} = matchedData(req, {locations: ['params']})
+        const {studentId} = matchedData(req, {locations: ['params']})
 
         //eliminación en cascada de examenes (se eliminan todos los asociados al estudiante)
-        await ExamModel.deleteMany({ examinee: id })
+        await ExamModel.deleteMany({ examinee: studentId })
         //eliminación en cascada de materias a la que está inscripto el estudiante
-        await SubjectModel.deleteMany({ students_enrolled: id})
+        await SubjectModel.deleteMany({ students_enrolled: studentId})
         //eliminación lógica de estudiante
-        const deletedStudent = await StudentModel.findByIdAndUpdate(id, {
+        const deletedStudent = await StudentModel.findByIdAndUpdate(studentId, {
             deletedAt: new Date(),
         },
         {
             returnDocument: 'after'
         })
-        return res.status(201).json({
+        return res.status(200).json({
             message: "Estudiante y sus exámenes eliminados con éxito:",
             data: deletedStudent
         })
