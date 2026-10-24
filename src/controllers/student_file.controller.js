@@ -52,7 +52,17 @@ export const getAllStudentFiles = async (_req, res) => {
 export const getStudentsFile = async (req, res) => {
     try {
         const { studentId } = matchedData(req, {locations: ['params']})
-        const studentsFile = await StudentFileModel.findOne( { student: studentId }).populate('student').populate('exams_passed')
+        const studentsFile = await StudentFileModel
+            .findOne({ student: studentId })
+            .select('-id')
+            .populate({
+                path: 'student', 
+                select: 'first_name last_name age -_id'
+            })
+            .populate({
+                path: 'exams_passed',
+                select: 'semester subject grade -_id'
+            })
 
         if (!studentsFile) {
             return res.status(404).json({

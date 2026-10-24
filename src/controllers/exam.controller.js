@@ -1,5 +1,6 @@
 import { ExamModel } from '../models/exam.model.js'
 import { matchedData } from 'express-validator'
+import { StudentModel } from '../models/student.model.js'
 
 //registrar (crear) un examen
 export const registerExam = async (req, res) => {
@@ -27,7 +28,7 @@ export const registerExam = async (req, res) => {
 //traer todos los examenes
 export const getAllExams = async (_req, res) => {
     try {
-        const allExams = await ExamModel.find().populate('examinee')
+        const allExams = await ExamModel.find().select('-_id').populate('examinee', '-_id')
 
         if (!allExams) {
             return res.status(404).json({
@@ -51,7 +52,8 @@ export const getAllExams = async (_req, res) => {
 export const getStudentExamById = async (req, res) => {
     try {
         const {studentId} = matchedData(req, {locations: ['params']})
-        const examsByStudentId = await ExamModel.find({ examinee: studentId }).populate('examinee')
+        const {first_name, last_name} = await StudentModel.findById(studentId).select('first_name last_name -_id')
+        const examsByStudentId = await ExamModel.find({ examinee: studentId }).select('-_id -examinee')
 
         if (!examsByStudentId) {
             return res.status(404).json({
@@ -60,7 +62,7 @@ export const getStudentExamById = async (req, res) => {
         }
 
         return res.status(200).json({ 
-            message: "Estudiante y exámenes encontrado:",
+            message: `Examenes registrados del estudiante ${first_name} ${last_name} encontrados:`,
             data: examsByStudentId
         })
     } catch (error) {

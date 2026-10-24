@@ -26,7 +26,7 @@ export const registerSubject = async (req, res) => {
 //traer todas las materias
 export const getAllSubjects = async (_req, res) => {
     try {
-        const allSubjects = await SubjectModel.find()
+        const allSubjects = await SubjectModel.find().populate('students_enrolled')
 
         if (!allSubjects) {
             return res.status(404).json({

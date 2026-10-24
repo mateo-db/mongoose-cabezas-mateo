@@ -28,7 +28,7 @@ export const registerStudent = async (req, res) => {
 //traer todos los estudiantes
 export const getAllStudents = async (_req, res) => {
     try {
-        const allStudents = await StudentModel.find()
+        const allStudents = await StudentModel.find({deletedAt: null})
 
         if (!allStudents) {
             return res.status(404).json({
@@ -53,6 +53,7 @@ export const getStudentAndExams = async (req, res) => {
         const {studentId} = matchedData(req, {locations: ['params']})
         const stuAndExams = await StudentModel.findById(studentId).populate({
             path: 'student_exams',
+            select: 'semester subject grade -_id -examinee',
             match: {deletedAt: null}
         })
 
