@@ -21,6 +21,8 @@ export const registerStudentValidations = [
 ]
 
 export const updateStudentValidations = [
+    param('studentId')
+    .isMongoId().withMessage('El id del estudiante debe ser un ObjectId de MongoDB'),
     body('first_name')
     .optional()
     .notEmpty().withMessage('El primer nombre es obligatorio')
@@ -45,7 +47,7 @@ export const updateStudentValidations = [
 
 //array para validar todas las rutas que reciben un ObjectId de MongoDB por los params de la petición (student)
 export const studentIdValidations = [
-    param("id")
+    param("studentId")
     .isMongoId().withMessage('El id del estudiante debe ser un ObjectId de MongoDB'),
 ]
 
