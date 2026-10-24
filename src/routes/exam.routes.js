@@ -1,6 +1,6 @@
 import { Router } from "express";
-import { examIdValidations, idExamValidations, registerExamValidations, updateExamValidations } from "../middlewares/validations/exam.validations.js";
-import { checkValidationsResult } from "../middlewares/validationResultHandler";
+import { examIdValidations, registerExamValidations, updateExamValidations } from "../middlewares/validations/exam.validations.js";
+import { checkValidationsResult } from "../middlewares/validationResultHandler.js";
 import { deleteExamById, getAllExams, getStudentExamById, registerExam, updateExamById } from "../controllers/exam.controller.js";
 import { studentIdValidations } from "../middlewares/validations/student.validations.js";
 
@@ -20,3 +20,5 @@ examRouter.put('/exams/:examId', updateExamValidations, checkValidationsResult, 
 
 //eliminar examen por su id
 examRouter.delete('/exams/:examId', examIdValidations, checkValidationsResult, deleteExamById)
+
+
