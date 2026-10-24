@@ -47,20 +47,21 @@ export const getAllExams = async (_req, res) => {
     }
 }
 
+//traer examenes por id de estudiante
 export const getStudentExamById = async (req, res) => {
     try {
-        const {id} = matchedData(req, {locations: ['params']})
-        const examById = await ExamModel.find(id).populate('student_exams')
+        const {studentId} = matchedData(req, {locations: ['params']})
+        const examsByStudentId = await ExamModel.find(studentId).populate('student_exams')
 
-        if (!examById) {
+        if (!examsByStudentId) {
             return res.status(404).json({
-                message: "No se encontró ese examen vinculado al estudiante"
+                message: "No se encontró examenes vinculados al estudiante"
             })
         }
 
         return res.status(200).json({
-            message: "Estudiante y su exámen encontrado:",
-            data: examById
+            message: "Estudiante y exámenes encontrado:",
+            data: examsByStudentId
         })
     } catch (error) {
         console.log(error)
@@ -70,13 +71,12 @@ export const getStudentExamById = async (req, res) => {
     }
 }
 
-
 //actualizar examen por id
 export const updateExamById = async (req, res) => {
     try {
-        const {id} = matchedData(req, {locations: ['params']})
+        const {examId} = matchedData(req, {locations: ['params']})
         const {examinee, subject, grade, semester} = matchedData(req, {locations: ['body']})
-        const examToUpdateById = await ExamModel.findByIdAndUpdate(id, 
+        const examToUpdateById = await ExamModel.findByIdAndUpdate(examId, 
             {
                 examinee,
                 subject,
@@ -107,12 +107,12 @@ export const updateExamById = async (req, res) => {
 }
 
 //eliminar examen por id
-export const deleteExam = async (req, res) => {
+export const deleteExamById = async (req, res) => {
     try {
-        const {id} = matchedData(req, {locations: ['params']})
+        const {examId} = matchedData(req, {locations: ['params']})
 
         //eliminación lógica
-        const deletedExam = await ExamModel.findByIdAndUpdate(id, {
+        const deletedExam = await ExamModel.findByIdAndUpdate(examId, {
             deletedAt: new Date(),
         },
         {
@@ -120,7 +120,7 @@ export const deleteExam = async (req, res) => {
         })
         return res.status(200).json({
             message: "Examen eliminado lógicamente con éxito:",
-            data: deletedStudent
+            data: deletedExam
         })
     } catch (error) {
         console.log(error)
