@@ -11,15 +11,17 @@ export const registerExamValidations = [
     .exists({ values: 'undefined' }).withMessage('La nota numérica es obligatoria')
     .isInt({ gt: -1, lt: 11 }).withMessage('El valor de la nota debe ser un número entero entre 0 y 10')
     .toInt(),
-    body('semester')
+    body('semester.period') //validación de propiedad embebida
     .optional()
     .isString().isIn(['first', 'second']).withMessage('El semestre debe ser un texto con uno de dos valores: first o second'),
-    body('semester.date') //validación de propiedad embebida en exam
+    body('semester.date') //validación de propiedad embebida
     .optional()
     .isDate().withMessage('La fecha debe de ser de un formáto válido (Ejemplo: 2026-10-23')
 ]
 
 export const updateExamValidations = [
+    param('examId')
+    .isMongoId().withMessage('El id del exámen debe ser un ObjectId de MongoDB'),
     body('examinee')
     .optional()
     .notEmpty().withMessage('El id del estudiante examinado es obligatorio')
@@ -33,15 +35,15 @@ export const updateExamValidations = [
     .exists({ values: 'undefined' }).withMessage('La nota numérica es obligatoria')
     .isInt({ gt: -1, lt: 11 }).withMessage('El valor de la nota debe ser un número entero entre 0 y 10')
     .toInt(),
-    body('semester')
+    body('semester.period') //validación de propiedad embebida
     .optional()
     .isString().isIn(['first', 'second']).withMessage('El semestre debe ser un texto con uno de dos valores: first o second'),
-    body('semester.date') //validación de propiedad embebida en exam
+    body('semester.date') //validación de propiedad embebida
     .optional()
     .isDate().withMessage('La fecha debe de ser de un formáto válido (Ejemplo: 2026-10-23')
 ]
 
-export const idExamValidations = [
-    param('id')
-    .isMongoId().withMessage('El id del exámen o estudiante que se envía por parámetros debe ser un ObjectId de MongoDB')
+export const examIdValidations = [
+    param('examId')
+    .isMongoId().withMessage('El id del exámen que se envía por parámetros debe ser un ObjectId de MongoDB')
 ]
