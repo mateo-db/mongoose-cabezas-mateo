@@ -1,11 +1,11 @@
-import { SubjectModel } from '../models/subject.model.JS'
+import { SubjectModel } from '../models/subject.model.js'
 import { matchedData } from 'express-validator'
 
 //registrar (crear) una materia
 export const registerSubject = async (req, res) => {
     try {
         const { name, teacher, students_enrolled } = matchedData(req, {locations: ['body']})
-        const newSubject = await ExamModel.create({
+        const newSubject = await SubjectModel.create({
             name,
             teacher,
             students_enrolled
@@ -49,8 +49,8 @@ export const getAllSubjects = async (_req, res) => {
 //traer una materia y alumnos inscriptos
 export const getSubjectAndStudents = async (req, res) => {
     try {
-        const { id } = matchedData(req, {locations: ['params']})
-        const subjectAndStudents = await SubjectModel.find(id).populate('students_enrolled')
+        const { subjectId } = matchedData(req, {locations: ['params']})
+        const subjectAndStudents = await SubjectModel.findById(subjectId).populate('students_enrolled')
 
         if (!subjectAndStudents) {
             return res.status(404).json({
@@ -74,9 +74,9 @@ export const getSubjectAndStudents = async (req, res) => {
 //actualizar materia por id
 export const updateSubjectById = async (req, res) => {
     try {
-        const {id} = matchedData(req, {locations: ['params']})
+        const {subjectId} = matchedData(req, {locations: ['params']})
         const {name, teacher, students_enrolled} = matchedData(req, {locations: ['body']})
-        const subjToUpdateById = await SubjectModel.findByIdAndUpdate(id, 
+        const subjToUpdateById = await SubjectModel.findByIdAndUpdate(subjectId, 
             {
                 name,
                 teacher,
@@ -110,12 +110,12 @@ export const updateSubjectById = async (req, res) => {
 }
 
 //eliminar materia
-export const deleteSubject = async (req, res) => {
+export const deleteSubjectById = async (req, res) => {
     try {
-        const {id} = matchedData(req, {locations: ['params']})
+        const {subjectId} = matchedData(req, {locations: ['params']})
 
         //eliminación lógica
-        const deletedSubject = await SubjectModel.findByIdAndUpdate(id, {
+        const deletedSubject = await SubjectModel.findByIdAndUpdate(subjectId, {
             deletedAt: new Date(),
         },
         {
