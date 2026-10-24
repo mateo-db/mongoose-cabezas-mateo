@@ -51,7 +51,10 @@ export const getAllStudents = async (_req, res) => {
 export const getStudentAndExams = async (req, res) => {
     try {
         const {studentId} = matchedData(req, {locations: ['params']})
-        const stuAndExams = await StudentModel.find(studentId).populate('student_exams')
+        const stuAndExams = await StudentModel.findById(studentId).populate({
+            path: 'student_exams',
+            match: {deletedAt: null}
+        })
 
         if (!stuAndExams) {
             return res.status(404).json({
@@ -133,6 +136,7 @@ export const updateStudentById = async (req, res) => {
 export const deleteStudentById = async (req, res) => {
     try {
         const {studentId} = matchedData(req, {locations: ['params']})
+        console.log("Id recibido:", studentId)
 
         //eliminación en cascada de examenes (se eliminan todos los asociados al estudiante)
         await ExamModel.deleteMany({ examinee: studentId })
