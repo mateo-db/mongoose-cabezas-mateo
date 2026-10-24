@@ -39,10 +39,7 @@ export const updateStudentValidations = [
     .isInt({ gt: 10, lt: 19 }).withMessage('La edad debe ser un número entero entre 11 y 18'),
     body('deletedAt')
     .optional()
-    .isDate({
-        format: 'DD/MM/YYYY',
-        strictMode: true
-    }).withMessage('El formato de fecha debe ser: Día/Mes/Año')
+    .isDate()
 ]
 
 //array para validar todas las rutas que reciben un ObjectId de MongoDB por los params de la petición (student)
