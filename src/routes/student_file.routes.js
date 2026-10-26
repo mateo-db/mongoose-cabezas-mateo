@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { deleteStudentFile, getAllStudentFiles, getStudentsFile, registerStudentFile, updateStudentFileById } from "../controllers/student_file.controller.js";
-import { registerStudentFileValidations, studentFileIdValidations, updateStudentFileValidations } from "../middlewares/validations/subject_file.validations.js";
+import { registerStudentFileValidations, studentFileIdValidations, updateStudentFileValidations } from "../middlewares/validations/student_file.validations.js";
 import { checkValidationsResult } from "../middlewares/validationResultHandler.js";
 import { studentIdValidations } from "../middlewares/validations/student.validations.js";
 
